@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head><meta charset="utf-8"><title>Äänitervehdys</title></head>
+<body style="font-size:22px;text-align:center;padding-top:50px;">
+Klikkaa tätä tekstiä niin puhun
+<script>
+document.body.onclick = () => {
+ let u=new SpeechSynthesisUtterance("Tämä on testi. Jos kuulet tämän, selaimen puhe toimii tällä sivulla internetissä.");
+ u.lang="fi-FI";
+ speechSynthesis.speak(u);
+}
+</script>
+</body>
+</html>
