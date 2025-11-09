@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head><meta charset="utf-8"><title>Kahviseura</title></head>
+<body style="font-size:22px;text-align:center;padding-top:50px;">
+Klikkaa puhuaksesi
+<script>
+const t="Hei. Istutaan minuutti. Kuuntele hetki, hengitä. Nyt ei ole kiire mihinkään.";
+document.body.onclick=()=>{let u=new SpeechSynthesisUtterance(t);u.lang="fi-FI";speechSynthesis.speak(u);}
+</script>
+</body>
+</html>
