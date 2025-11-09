@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html lang="fi">
-<head><meta charset="utf-8"><title>Äänitervehdys</title></head>
-<body style="font-size:22px;text-align:center;padding-top:50px;">
-Klikkaa tätä tekstiä niin puhun
+<head>
+  <meta charset="utf-8"/>
+  <title>Valitse puhe</title>
+</head>
+<body style="font-family:sans-serif; text-align:center; margin-top:50px;">
+
+<h1>Valitse puhe</h1>
+
+<button onclick="play(p1)">1) Päivän tervehdys</button><br><br>
+<button onclick="play(p2)">2) Motivoiva puhe</button><br><br>
+<button onclick="play(p3)">3) Rento kahviseura</button><br><br>
+
+<button onclick="stop()">🔳 Stop</button>
+
 <script>
-document.body.onclick = () => {
- let u=new SpeechSynthesisUtterance("Tämä on testi. Jos kuulet tämän, selaimen puhe toimii tällä sivulla internetissä.");
- u.lang="fi-FI";
- speechSynthesis.speak(u);
+let synth = window.speechSynthesis;
+
+let p1 = "Hyvää huomenta. Päivä voi alkaa nyt positiivisella energialla.";
+let p2 = "Sinä pystyt tähän. Älä luovuta. Jokainen askel vie sinua eteenpäin.";
+let p3 = "Otetaan rennosti. Jutellaan kuin kahvilla ystävän kanssa.";
+
+function play(text){
+   let u = new SpeechSynthesisUtterance(text);
+   u.lang = 'fi-FI';
+   synth.cancel();
+   synth.speak(u);
+}
+
+function stop(){
+   synth.cancel();
 }
 </script>
+
 </body>
 </html>
