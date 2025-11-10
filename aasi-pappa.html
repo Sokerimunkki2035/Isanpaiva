@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aasi-pappa</title>
+<style>
+body{background:#fafafa;font-family:system-ui,Arial;padding:20px}
+h1{font-size:24px;margin-bottom:20px}
+button{display:block;width:100%;padding:16px;font-size:20px;margin:10px 0;border-radius:12px;border:1px solid #ccc;background:white}
+</style>
+</head>
+<body>
+
+<h1>Aasi-pappa</h1>
+
+<button onclick="sayOnce()">Puhu kerran</button>
+<button onclick="sayFifty()">Puhu 50 kertaa</button>
+
+<script>
+const phrase="Minä olen kulkenut pitkän matkan, ihaa-haa.";
+
+function sayOnce(){ say(phrase); }
+
+async function sayFifty(){
+  for(let i=0;i<50;i++){
+    say(phrase);
+    await wait(1000);
+  }
+}
+
+function say(t){
+  const u=new SpeechSynthesisUtterance(t);
+  u.lang="fi-FI";
+  speechSynthesis.speak(u);
+}
+
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+
+</body>
+</html>
