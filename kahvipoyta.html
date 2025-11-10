@@ -135,7 +135,7 @@ async function send(){
 
   // Pappa kommentoi perään (lyhyempi + kysymys)
   const p = pappaReply(user);
-let wait = Math.max(1500, h.length * 25); // odota hanhen pituuden mukaan
+let wait = Math.max(3000, h.length * 50); // odota hanhen pituuden mukaan
 setTimeout(()=>{ addLine('pappa','Aasi-pappa', p); say(p); }, wait);
 
   inp.value = "";
