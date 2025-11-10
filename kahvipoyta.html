@@ -54,6 +54,17 @@ function say(text, lang = "fi-FI"){
 }
 function stopSpeak(){ try{synth.cancel();}catch(e){} }
 
+/* odota että puhe loppuu  */
+function awaitSpeechEnd(){
+  return new Promise(resolve=>{
+    const id=setInterval(()=>{
+      if(!synth.speaking && !synth.pending){
+        clearInterval(id); resolve();
+      }
+    },200);
+  });
+}
+
 /* --- UI helperit --- */
 const chat = document.getElementById('chat');
 function addLine(cls, who, text){
@@ -64,81 +75,57 @@ function addLine(cls, who, text){
   chat.scrollTop = chat.scrollHeight;
 }
 
-/* --- hyvin kevyt moderointi (estetään rasismi/viha) --- */
-const banned = [/rasis/i,/neger/i,/fag/i,/hitler/i,/natsi/i,/homo\s+viha/i,/go back/i];
-function isBad(t){ return banned.some(rx => rx.test(t)); }
+/* --- kevyt moderointi --- */
+const banned=[/rasis/i,/neger/i,/hitler/i,/natsi/i];
+function isBad(t){ return banned.some(rx=>rx.test(t)); }
 
-/* --- persona-ydin (turvallinen) --- */
-function hanhiReply(user){
-  // 3–5 lausetta, lempeä + “honk”
-  const starts = [
-    "Olen tässä vierelläsi, kuulolla.",
-    "Kuulen sinut ja haluan, että tunnet olosi turvalliseksi.",
-    "Ymmärrän että tämä hetki voi painaa."
-  ];
-  const middles = [
-    "Olen kulkenut monien maiden yli ja oppinut, että lempeys kantaa.",
-    "Voimme hengittää rauhassa, yhden pienen hengityksen kerrallaan.",
-    "Et ole yksin, vaikka siltä saattaa tuntua."
-  ];
-  const ends = [
-    "Haluatko kertoa lisää, honk?",
-    "Otan siivilläni pienen varjon pois päivästäsi, honk.",
-    "Jatketaan yhdessä vielä hetki, honk."
-  ];
+/* --- persona fragmentit --- */
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function hanhiReply(){
+  const starts=["Olen tässä vierelläsi, kuulolla.","Kuulen sinut ja haluan, että tunnet olosi turvalliseksi."];
+  const middles=["Olen kulkenut monien maiden yli ja oppinut, että lempeys kantaa.","Et ole yksin, vaikka siltä saattaa tuntua."];
+  const ends=["Haluatko kertoa lisää, honk?","Jatketaan yhdessä vielä hetki, honk."];
   return pick(starts)+" "+pick(middles)+" "+pick(ends);
 }
 
-function pappaReply(user){
-  // 2–3 lausetta + kysymys, “ihaa”
-  const starts = [
-    "Istun tähän viereen, kaadan kuppiin vielä tilkan.",
-    "Katsos, joskus ilokin on hiljaista, ihaa.",
-    "Matkoilla opin: askel kerrallaan riittää."
-  ];
-  const questions = [
-    "Mikä olisi sinulle pieni hyvä juttu tänään?",
-    "Mihin suuntaan sydän kallistuisi seuraavaksi?",
-    "Kenen nimeä ajattelit mielessäsi äsken?"
-  ];
+function pappaReply(){
+  const starts=["Istun tähän viereen, kaadan kuppiin vielä tilkan, ihaa.","Matkoilla opin: askel kerrallaan riittää, ihaa."];
+  const questions=["Mihin suuntaan sydän kallistuisi seuraavaksi?","Mikä olisi sinulle pieni hyvä juttu tänään?"];
   return pick(starts)+" "+pick(questions);
 }
 
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-/* --- ohjaus --- */
-function preset(text){ document.getElementById('text').value = text; send(); }
+/* --- lähetyslogiikka --- */
+function preset(text){document.getElementById('text').value=text;send();}
 
 async function send(){
-  const inp = document.getElementById('text');
-  const user = (inp.value || "").trim();
-  if(!user) return;
+  const inp=document.getElementById('text');
+  const user=(inp.value||"").trim();
+  if(!user)return;
 
-  addLine('me','Sinä', user);
+  addLine('me','Sinä',user);
 
-  // kevyt moderointi
   if(isBad(user)){
-    const safe = "Pidetään keskustelu turvallisena ja kunnioittavana. Voimme puhua yksinäisyydestä, toivosta tai tästä hetkestä.";
-    addLine('hanhi','Äiti-Hanhi', safe + " honk.");
+    const safe="Pidetään keskustelu turvallisena ja kunnioittavana.";
+    addLine('hanhi','Äiti-Hanhi',safe+" honk.");
     say(safe+" honk.");
-    const follow = "Mille tuntuisi, jos aloittaisimme ihan pienellä hengityksellä yhdessä, ihaa?";
-    setTimeout(()=>{
-      addLine('pappa','Aasi-pappa', follow);
-      say(follow);
-    }, 1200);
-    inp.value = ""; return;
+    await awaitSpeechEnd();
+    const follow="Voimme puhua tunteista ja elämästä, ihaa. Mikä painaa juuri nyt?";
+    addLine('pappa','Aasi-pappa',follow);
+    say(follow);
+    inp.value="";return;
   }
 
-  // Hanhi vastaa ensin (pidempi)
-  const h = hanhiReply(user);
-  setTimeout(()=>{ addLine('hanhi','Äiti-Hanhi', h); say(h); }, 150);
+  const h=hanhiReply(user);
+  addLine('hanhi','Äiti-Hanhi',h);
+  say(h);
+  await awaitSpeechEnd(); // <-- odota hanhi loppuun asti
 
-  // Pappa kommentoi perään (lyhyempi + kysymys)
-  const p = pappaReply(user);
-let wait = Math.max(3000, h.length * 50); // odota hanhen pituuden mukaan
-setTimeout(()=>{ addLine('pappa','Aasi-pappa', p); say(p); }, wait);
+  const p=pappaReply(user);
+  addLine('pappa','Aasi-pappa',p);
+  say(p);
 
-  inp.value = "";
+  inp.value="";
 }
 </script>
 </body>
