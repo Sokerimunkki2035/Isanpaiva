@@ -8,6 +8,7 @@
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait-primary",
+"prefer_related_applications": false,
   "categories": ["social", "lifestyle"],
   "icons": [
     {
