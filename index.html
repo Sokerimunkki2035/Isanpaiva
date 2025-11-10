@@ -1,34 +1,27 @@
 <!DOCTYPE html>
-<html lang="fi">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ääniystävä</title>
-
-<!-- manifest -->
+<title>SoundFriend</title>
 <link rel="manifest" href="manifest.json">
-
 <style>
 body{background:#fafafa;font-family:system-ui,Arial;padding:24px;margin:0}
 h1{font-size:28px;margin-bottom:28px;text-align:center}
 button{width:100%;padding:18px;font-size:20px;margin-bottom:16px;
 border-radius:12px;border:1px solid #ccc;background:white}
 </style>
-
 </head>
 <body>
 
-<h1>Ääniystävä</h1>
+<h1>SoundFriend</h1>
 
-<button onclick="location.href='aiti-hanhi.html'">Äiti-hanhi (yksin)</button>
-<button onclick="location.href='aasi-pappa.html'">Aasi-pappa (yksin)</button>
-<button onclick="location.href='kahvipoyta.html'">☕ Kahvipöytä (molemmat hahmot)</button>
+<button onclick="location.href='mother-goose.html'">Mother Goose (alone)</button>
+<button onclick="location.href='donkey-grandpa.html'">Donkey Grandpa (alone)</button>
+<button onclick="location.href='coffee-table.html'">☕ Coffee Table (both)</button>
 
 <script>
-// SERVICE WORKER
-if ('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 </script>
 
 </body>
